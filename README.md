@@ -43,18 +43,18 @@ This repository contains a DICOM (Digital Imaging and Communications in Medicine
    ```
    
 2. **Install Dependencies**
-```bash
-sudo apt-get update
-sudo apt-get install build-essential cmake libopencv-dev
-```
+   ```bash
+   sudo apt-get update
+   sudo apt-get install build-essential cmake libopencv-dev
+   ```
 
 3. **Configure and Build the Project**
-```bash
-mkdir build
-cd build
-cmake ..
-make
-```
+   ```bash
+   mkdir build
+   cd build
+   cmake ..
+   make
+   ```
 
 ## Usage
 
