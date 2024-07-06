@@ -10,6 +10,9 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/p-ranav/argparse.git
 )
 FetchContent_MakeAvailable(argparse)
+
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 add_executable (DicomImageProcessor "DicomImageProcessor.cpp" "DicomImageProcessor.h")
 target_link_libraries(DicomImageProcessor ${OpenCV_LIBS} argparse)
 
