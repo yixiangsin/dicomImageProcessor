@@ -4,8 +4,6 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include "DicomImageProcessor.h"
-#include <filesystem>
-#include <argparse/argparse.hpp>
 
 using namespace std;
 using namespace cv;
@@ -23,7 +21,7 @@ cv::Rect DicomImageProcessor::edgeDetectionIndicatorRoiDetector(const cv::Mat& i
         Mat labels;
         connectedComponents(input, labels);
 
-        return cv::Rect();
+        return cv::Rect(-1, -1, -1, -1);
 }
 
 cv::Rect DicomImageProcessor::pixelThresholdDetectionIndicatorRoiDetector(const cv::Mat& input)
@@ -36,26 +34,5 @@ cv::Rect DicomImageProcessor::featuresDetectionIndicatorRoiDetector(const cv::Ma
         return cv::Rect();
 }
 
-
-int main()
-{
-        for (auto& file : std::filesystem::directory_iterator{ "../../../../dicom/" })  //loop through the current folder
-        {
-                if (file.path().extension().compare(".jpeg") == 0) {
-                        Mat input = imread(file.path().generic_string() , 0);
-           
-                        imshow("test", input);
-                      
-                        
-
-                        waitKey(0);
-                }
-                cout<< file.path() ;    //open the file
-                //or because directory_entry is implicit converted to a path, so you can do 
-                //std::ifstream fs{ file };
-                //... process the file
-        }
-	return 0;
-}
 
 

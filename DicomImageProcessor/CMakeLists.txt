@@ -13,7 +13,15 @@ FetchContent_MakeAvailable(argparse)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-add_executable (DicomImageProcessor "DicomImageProcessor.cpp" "DicomImageProcessor.h")
+add_library(DicomImageProcessorLib
+    DicomImageProcessor.cpp
+    DicomImageProcessor.h
+)
+
+# Include directories for the library
+target_include_directories(DicomImageProcessorLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable (DicomImageProcessor "DicomImageProcessor.cpp" "DicomImageProcessor.h" "main.cpp")
 target_link_libraries(DicomImageProcessor ${OpenCV_LIBS} argparse)
 
 # TODO: Add tests and install targets if needed.
