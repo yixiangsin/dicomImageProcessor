@@ -13,7 +13,7 @@ This repository contains a DICOM (Digital Imaging and Communications in Medicine
 ## Requirements
 
 - Visual Studio 2019 or later
-- OpenCV 4.5 or later
+- OpenCV 4.10 or later
 
 ## Installation
 
