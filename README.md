@@ -29,9 +29,7 @@ This repository contains a DICOM (Digital Imaging and Communications in Medicine
 2. **Install Dependencies**
 
 - Download and install [Visual Studio](https://visualstudio.microsoft.com/downloads/)
-- Install [CMake](https://cmake.org/download/)
-- Install [OpenCV](https://opencv.org/releases/) and set up the environment variables
-- Install [DCMTK](https://dcmtk.org/dcmtk.php.en) and set up the environment variables
+- Install [OpenCV](https://opencv.org/releases/) and set up the environment variables ( please set "your Opencv path"\opencv\build\x64\vc16\lib and "your Opencv path"\opencv\build\x64\vc16\bin into system path)
 
 3. **Configure and Build the Project**
 
