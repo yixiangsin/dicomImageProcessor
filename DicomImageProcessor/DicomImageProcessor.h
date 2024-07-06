@@ -11,10 +11,10 @@ public:
         cv::Rect indicatorRoiDetector(const cv::Mat& input);
 
 protected:
-        cv::Rect edgeDetectionIndicatorRoiDetector(const cv::Mat& input);
-        cv::Rect pixelThresholdDetectionIndicatorRoiDetector(const cv::Mat& input);
-        cv::Rect featuresDetectionIndicatorRoiDetector(const cv::Mat& input);
-        
+        virtual cv::Rect edgeDetectionIndicatorRoiDetector(const cv::Mat& input);
+        virtual cv::Rect pixelThresholdDetectionIndicatorRoiDetector(const cv::Mat& input);
+        virtual cv::Rect featuresDetectionIndicatorRoiDetector(const cv::Mat& input);
+
 private:
 
 
