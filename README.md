@@ -41,6 +41,8 @@ This repository contains a DICOM (Digital Imaging and Communications in Medicine
 ### Run the Application
 
 you will able to run the project after all environment is done setup with visual studio
+- Select DicomImageProcessor.cpp
+- Select drop down from the run button and select current document
 
 ## Contributing
 
