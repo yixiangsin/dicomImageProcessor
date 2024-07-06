@@ -13,9 +13,7 @@ This repository contains a DICOM (Digital Imaging and Communications in Medicine
 ## Requirements
 
 - Visual Studio 2019 or later
-- CMake 3.10 or later
 - OpenCV 4.5 or later
-- DCMTK (DICOM Toolkit) 3.6.5 or later
 
 ## Installation
 
