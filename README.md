@@ -34,13 +34,49 @@ This repository contains a DICOM (Digital Imaging and Communications in Medicine
 - Open Local Folder with Visual Studio
 - Select folder you clone the dicomImageProcessor
 
+### Linux
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yixiangsin/dicomImageProcessor.git
+   cd dicomImageProcessor
+   ```
+   
+2. **Install Dependencies**
+```bash
+sudo apt-get update
+sudo apt-get install build-essential cmake libopencv-dev
+```
+
+3. **Configure and Build the Project**
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+
 ## Usage
 
 ### Run the Application
 
+### Windows
+
 you will able to run the project after all environment is done setup with visual studio
 - Select DicomImageProcessor.cpp
 - Select drop down from the run button and select current document
+- Select DicomImageProcessorUnitTest.cpp
+- Select drop down from the run button and select current document
+
+### Linux
+for running program
+```bash
+./DicomImageProcessor/DicomImageProcessor
+```
+for unit test 
+```bash
+./UnitTest/DicomImageProcessorUnitTest
+```
 
 ## Contributing
 
