@@ -66,7 +66,7 @@ This repository contains a DICOM (Digital Imaging and Communications in Medicine
 
 you will able to run the project after all environment is done setup with visual studio
 - Select DicomImageProcessor.cpp
-- Edit launch.vs.json in ./vs folder to add "args": [ "--input", "your dicom image folder Path", "--method", "method to select 0 = edge detection ,1 = pixel threshold" ]
+- Edit launch.vs.json in .vs/ folder to add "args": [ "--input", "your dicom image folder Path", "--method", "method to select 0 = edge detection ,1 = pixel threshold" ]
 - Select drop down from the run button and select current document
 - Select DicomImageProcessorUnitTest.cpp
 - Select drop down from the run button and select current document
