@@ -9,17 +9,41 @@ using namespace std;
 using namespace cv;
 
 
-int main()
+int main(int argc, char* argv[])
 {
-        for (auto& file : std::filesystem::directory_iterator{ "../../../../dicom/" })  //loop through the current folder
+        argparse::ArgumentParser program("DicomImageProcessor");
+        program.add_argument("-v", "--verbose")
+                .help("Enable verbose mode")
+                .default_value(false)
+                .implicit_value(true);
+        program.add_argument("--input")
+                .help("Input image path")
+                .required();
+        program.add_argument("--method")
+                .help("Indicator detection method")
+                .default_value(0)
+                .scan<'i', int>()
+                .required();
+        try {
+                program.parse_args(argc, argv);
+        }
+        catch (const std::runtime_error& err) {
+                std::cerr << err.what() << std::endl;
+                std::cerr << program;
+                std::exit(1);
+        }
+        std::string imgPath = program.get<std::string>("--input");
+        int method = program.get<int>("--method");
+
+        for (auto& file : std::filesystem::directory_iterator{ imgPath })  //loop through the current folder
         {
-                if (file.path().extension().compare(".tif") == 0) {
+                if (file.path().extension().compare(".jpeg") == 0) {
                         Mat input = imread(file.path().generic_string(), 0);
 
                         imshow("test", input);
 
                         DicomImageProcessor dicomImageProcessor;
-                        cv::Rect roi = dicomImageProcessor.indicatorRoiDetector(input, DicomImageProcessor::IndicatorDetectionMethod::PIXEL_THRESHOLD);
+                        cv::Rect roi = dicomImageProcessor.indicatorRoiDetector(input, DicomImageProcessor::IndicatorDetectionMethod(method));
 
                         waitKey(0);
                 }
