@@ -37,14 +37,14 @@ int main(int argc, char* argv[])
 
         for (auto& file : std::filesystem::directory_iterator{ imgPath })  //loop through the current folder
         {
-                if (file.path().extension().compare(".jpeg") == 0) {
+                if (file.path().extension().compare(".png") == 0) {
                         Mat input = imread(file.path().generic_string(), 0);
 
-                        imshow("test", input);
+
 
                         DicomImageProcessor dicomImageProcessor;
-                        cv::Rect roi = dicomImageProcessor.indicatorRoiDetector(input, DicomImageProcessor::IndicatorDetectionMethod(method));
-
+                        dicomImageProcessor.dicomImageRotateCorrection(input, DicomImageProcessor::IndicatorDetectionMethod(method));
+                        imshow("test", input);
                         waitKey(0);
                 }
                 cout << file.path();

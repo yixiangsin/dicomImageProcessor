@@ -23,7 +23,7 @@ public:
         cv::Rect indicatorRoiDetector(const cv::Mat& input, const IndicatorDetectionMethod& method);
         const Indicator& getTopLeftIndicator() const;
         const Indicator& getBottomRightIndicator() const;
-        bool dicomImageRotateCorrection(cv::Mat& input);
+        bool dicomImageRotateCorrection(cv::Mat& input, const IndicatorDetectionMethod& method = IndicatorDetectionMethod::EDGE_DETECTION);
         DicomImageProcessor();
 
 protected:

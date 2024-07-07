@@ -17,12 +17,26 @@ const Indicator& DicomImageProcessor::getTopLeftIndicator() const
         return topLeftIndicator;
 }
 
-bool DicomImageProcessor::dicomImageRotateCorrection(cv::Mat& input)
+bool DicomImageProcessor::dicomImageRotateCorrection(cv::Mat& input, const IndicatorDetectionMethod& method)
 {
         if (input.empty())
         {
                 return false;
         }
+        Mat inputCopy = input.clone();
+        cv::Rect roi = indicatorRoiDetector(inputCopy, method);
+
+        if ((roi & topLeftIndicator.position).area() > topLeftIndicator.size)
+        {
+                return true;
+        }
+        else if ((roi & bottomRightIndicator.position).area() > bottomRightIndicator.size)
+        {
+                cv::rotate(input, input, ROTATE_180);
+                return true;
+        }
+        return false;
+
 }
 
 const Indicator& DicomImageProcessor::getBottomRightIndicator() const
