@@ -13,13 +13,13 @@ int main()
 {
         for (auto& file : std::filesystem::directory_iterator{ "../../../../dicom/" })  //loop through the current folder
         {
-                if (file.path().extension().compare(".jpeg") == 0) {
+                if (file.path().extension().compare(".tif") == 0) {
                         Mat input = imread(file.path().generic_string(), 0);
 
                         imshow("test", input);
 
                         DicomImageProcessor dicomImageProcessor;
-                        cv::Rect roi = dicomImageProcessor.indicatorRoiDetector(input, DicomImageProcessor::IndicatorDetectionMethod::EDGE_DETECTION);
+                        cv::Rect roi = dicomImageProcessor.indicatorRoiDetector(input, DicomImageProcessor::IndicatorDetectionMethod::PIXEL_THRESHOLD);
 
                         waitKey(0);
                 }
