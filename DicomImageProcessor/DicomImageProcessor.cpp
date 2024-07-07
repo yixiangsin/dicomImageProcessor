@@ -49,12 +49,28 @@ cv::Rect DicomImageProcessor::edgeDetectionIndicatorRoiDetector(const cv::Mat& i
 
 cv::Rect DicomImageProcessor::pixelThresholdDetectionIndicatorRoiDetector(const cv::Mat& input)
 {
+        if (input.empty())
+        {
+                return cv::Rect(-1, -1, -1, -1);
+        }
+        Mat inputCopy = input.clone();
         Mat inputInv = 255 - input;
         threshold(inputInv, inputInv, 10, 255, 1);
-        Mat labels;
-        connectedComponents(input, labels);
-        imshow("result", inputInv);
+        dilate(inputInv, inputInv, Mat(), Point(-1, -1), 2);
 
+        std::vector<Rect> rois = findIndicatorRoi(inputInv);
+        for (auto roi : rois)
+        {
+                drawRectangle(inputCopy, roi);
+        }
+
+        //imshow("result", inputCopy);
+        //imshow("img processed", inputInv);
+
+        if (rois.size() == 1)
+        {
+                return rois[0];
+        }
 
         return cv::Rect();
 }
@@ -82,6 +98,23 @@ std::vector<cv::Rect> DicomImageProcessor::findIndicatorRoi(const cv::Mat& input
                                         stats.at<int>(label, CC_STAT_HEIGHT)));
                 }
         }
+        vector<vector<Point>> contours;
+        if(rois.size() == 0)
+        {
+                findContours(input, contours, RETR_LIST, CHAIN_APPROX_NONE);
+                for (auto contour : contours)
+                {
+                        Rect roi = boundingRect(contour);
+                        double widthHeightRatio = double(roi.width) / double(roi.height);
+                        if (roi.area() > 250 &&
+                                roi.area() < 400 &&
+                                widthHeightRatio > 0.9 && widthHeightRatio < 1.1)
+                        {
+                                rois.push_back(roi);
+                        }
+                }
+        }
+        contours.clear();
         return rois;
 }
 
