@@ -8,6 +8,20 @@
 using namespace std;
 using namespace cv;
 
+DicomImageProcessor::DicomImageProcessor() : topLeftIndicator(cv::Rect(108, 90, 15, 15), 195),   bottomRightIndicator(cv::Rect(515, 374, 15, 15), 195)
+{
+}
+
+const Indicator& DicomImageProcessor::getTopLeftIndicator() const
+{
+        return topLeftIndicator;
+}
+
+const Indicator& DicomImageProcessor::getBottomRightIndicator() const
+{
+        return bottomRightIndicator;
+}
+
 cv::Rect DicomImageProcessor::indicatorRoiDetector(const cv::Mat& input, const IndicatorDetectionMethod& method)
 {
         switch (method)
@@ -123,5 +137,7 @@ void DicomImageProcessor::drawRectangle(cv::Mat& input, const cv::Rect& roi)
         cv::rectangle(input, roi, cv::Scalar(255, 0, 0), 2);
 }
 
-
+Indicator::Indicator(const cv::Rect& position, const size_t size) : position(position), size(size)
+{
+}
 

@@ -2,13 +2,6 @@
 #include <opencv2/opencv.hpp>
 #include "DicomImageProcessor.h"
 
-const cv::Rect topLeftIndicator(108, 90, 15, 15);
-const cv::Rect topRightIndicator(515, 90, 15, 15);
-const cv::Rect bottomLeftIndicator(108, 374, 15, 15);
-const cv::Rect bottomRightIndicator(515, 374, 15, 15);
-const size_t indicatorSizeThreshold = 195;
-
-
 class DicomImageProcessorTest : public ::DicomImageProcessor {
 
 public:
@@ -34,13 +27,13 @@ TEST(DicomImageProcessorTest, edgeDetectionIndicatorRoiDetector) {
 
         // Check if the detected ROI is close to the top left indicator
         cv::Mat inputTopLeft = cv::imread("../../../../dicom/topLeft.jpeg", 0);
-        cv::Rect intersectTopLeft = dicomImageProcessor.edgeDetectionIndicatorRoiDetector(inputTopLeft) &  topLeftIndicator;
-        EXPECT_GT(intersectTopLeft.area(), indicatorSizeThreshold);
+        cv::Rect intersectTopLeft = dicomImageProcessor.edgeDetectionIndicatorRoiDetector(inputTopLeft) & dicomImageProcessor.getTopLeftIndicator().position;
+        EXPECT_GT(intersectTopLeft.area(), dicomImageProcessor.getTopLeftIndicator().size);
 
         // Check if the detected ROI is close to the bottom right indicator
         cv::Mat inputBottomRight = cv::imread("../../../../dicom/bottomRight.png", 0);
-        cv::Rect intersectBottomRight = dicomImageProcessor.edgeDetectionIndicatorRoiDetector(inputBottomRight) & bottomRightIndicator;
-        EXPECT_GT(intersectBottomRight.area(), indicatorSizeThreshold);
+        cv::Rect intersectBottomRight = dicomImageProcessor.edgeDetectionIndicatorRoiDetector(inputBottomRight) & dicomImageProcessor.getBottomRightIndicator().position;
+        EXPECT_GT(intersectBottomRight.area(), dicomImageProcessor.getBottomRightIndicator().size);
 }
 
 TEST(DicomImageProcessorTest, edgeDetectionIndicatorRoiDetectorEmptyImage) {
@@ -60,13 +53,13 @@ TEST(DicomImageProcessorTest, pixelThresholdDetectionIndicatorRoiDetector) {
 
         // Check if the detected ROI is close to the top left indicator
         cv::Mat inputTopLeft = cv::imread("../../../../dicom/topLeft.jpeg", 0);
-        cv::Rect intersectTopLeft = dicomImageProcessor.pixelThresholdDetectionIndicatorRoiDetector(inputTopLeft) & topLeftIndicator;
-        EXPECT_GT(intersectTopLeft.area(), indicatorSizeThreshold);
+        cv::Rect intersectTopLeft = dicomImageProcessor.pixelThresholdDetectionIndicatorRoiDetector(inputTopLeft) & dicomImageProcessor.getTopLeftIndicator().position;
+        EXPECT_GT(intersectTopLeft.area(), dicomImageProcessor.getTopLeftIndicator().size);
 
         // Check if the detected ROI is close to the bottom right indicator
         cv::Mat inputBottomRight = cv::imread("../../../../dicom/bottomRight.png", 0);
-        cv::Rect intersectBottomRight = dicomImageProcessor.pixelThresholdDetectionIndicatorRoiDetector(inputBottomRight) & bottomRightIndicator;
-        EXPECT_GT(intersectBottomRight.area(), indicatorSizeThreshold);
+        cv::Rect intersectBottomRight = dicomImageProcessor.pixelThresholdDetectionIndicatorRoiDetector(inputBottomRight) & dicomImageProcessor.getBottomRightIndicator().position;
+        EXPECT_GT(intersectBottomRight.area(), dicomImageProcessor.getBottomRightIndicator().size);
 }
 
 TEST(DicomImageProcessorTest, pixelThresholdDetectionIndicatorRoiDetectorEmptyImage) {
