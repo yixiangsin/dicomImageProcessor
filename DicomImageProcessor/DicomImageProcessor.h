@@ -7,8 +7,13 @@
 
 class DicomImageProcessor {
 public:
+        enum IndicatorDetectionMethod {
+                EDGE_DETECTION,
+                PIXEL_THRESHOLD,
+                FEATURES_DETECTION
+        };
 
-        cv::Rect indicatorRoiDetector(const cv::Mat& input);
+        cv::Rect indicatorRoiDetector(const cv::Mat& input, const IndicatorDetectionMethod& method);
 
 protected:
         virtual cv::Rect edgeDetectionIndicatorRoiDetector(const cv::Mat& input);
@@ -16,6 +21,8 @@ protected:
         virtual cv::Rect featuresDetectionIndicatorRoiDetector(const cv::Mat& input);
 
 private:
+        std::vector<cv::Rect> findIndicatorRoi(const cv::Mat& input);
+        void drawRectangle(cv::Mat& input, const cv::Rect& roi);
 
 
 };
