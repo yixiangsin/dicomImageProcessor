@@ -22,6 +22,7 @@ This repository contains a DICOM (Digital Imaging and Communications in Medicine
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/yixiangsin/dicomImageProcessor.git
+   git submodule update --init
    cd dicomImageProcessor
    
 2. **Install Dependencies**
