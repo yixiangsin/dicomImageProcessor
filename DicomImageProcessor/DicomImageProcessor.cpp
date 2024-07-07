@@ -17,6 +17,14 @@ const Indicator& DicomImageProcessor::getTopLeftIndicator() const
         return topLeftIndicator;
 }
 
+bool DicomImageProcessor::dicomImageRotateCorrection(cv::Mat& input)
+{
+        if (input.empty())
+        {
+                return false;
+        }
+}
+
 const Indicator& DicomImageProcessor::getBottomRightIndicator() const
 {
         return bottomRightIndicator;

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <opencv2/opencv.hpp>
+#include <opencv2/imgproc.hpp>
 #include "DicomImageProcessor.h"
 
 class DicomImageProcessorTest : public ::DicomImageProcessor {
@@ -73,6 +74,49 @@ TEST(DicomImageProcessorTest, pixelThresholdDetectionIndicatorRoiDetectorEmptyIm
         EXPECT_EQ(roi.width, -1);
         EXPECT_EQ(roi.height, -1);
 }
+
+TEST(DicomImageProcessorTest, dicomImageRotateCorrectionEmptyImageTest) {
+        DicomImageProcessorTest dicomImageProcessor;
+        cv::Mat emptyInput;
+
+        // Check if the function returns false for an empty image
+        EXPECT_FALSE(dicomImageProcessor.dicomImageRotateCorrection(emptyInput));
+}
+
+TEST(DicomImageProcessorTest, dicomImageRotateCorrectionTest) {
+        DicomImageProcessorTest dicomImageProcessor;
+        cv::Mat inputNoRotate = cv::imread("../../../../dicom/topLeft.jpeg", 0);
+        cv::Mat inputNoRotateCopy = inputNoRotate.clone();
+        dicomImageProcessor.dicomImageRotateCorrection(inputNoRotate);
+        EXPECT_EQ(inputNoRotate.size(), inputNoRotateCopy.size());
+        EXPECT_EQ(inputNoRotate.type(), inputNoRotateCopy.type());
+
+        cv::Mat diffNoRotate;
+        cv::bitwise_xor(inputNoRotate, inputNoRotateCopy, diffNoRotate);
+        EXPECT_EQ(cv::countNonZero(diffNoRotate), 0);
+
+
+        cv::Mat inputRotate = cv::imread("../../../../dicom/bottomRight.png", 0);
+        cv::Mat inputRotateCopy = inputRotate.clone();
+        dicomImageProcessor.dicomImageRotateCorrection(inputRotate);
+        EXPECT_EQ(inputRotate.size(), inputRotateCopy.size());
+        EXPECT_EQ(inputRotate.type(), inputRotateCopy.type());
+
+        cv::Mat diffRotate;
+        cv::bitwise_xor(inputRotate, inputRotateCopy, diffRotate);
+        EXPECT_NE(cv::countNonZero(diffRotate), 0);
+
+        cv::Mat inputRotated;
+        cv::rotate(inputRotateCopy, inputRotated, cv::ROTATE_180);
+        cv::Mat diffRotated;
+        cv::bitwise_xor(inputRotate, inputRotated, diffRotated);
+        EXPECT_EQ(cv::countNonZero(diffRotated), 0);
+
+}
+
+
+
+
 
 // Main function
 int main(int argc, char** argv) {
