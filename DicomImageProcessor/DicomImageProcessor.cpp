@@ -172,7 +172,38 @@ cv::Rect DicomImageProcessor::pixelThresholdDetectionIndicatorRoiDetector(const 
 
 cv::Rect DicomImageProcessor::combineDetectionIndicatorRoiDetector(const cv::Mat& input)
 {
-        return cv::Rect();
+        if (input.empty())
+        {
+                return cv::Rect(-1, -1, -1, -1);
+        }
+
+        // dilate the image to remove line and number
+        dilate(input, input, Mat(), Point(-1, -1), 2);
+
+        Mat inputCopy = input.clone();
+        Mat inputInv = 255 - input;
+        threshold(inputInv, inputInv, 50, 255, 1);
+        //imshow("inv", inputInv);
+        Mat inputOriginalThres = inputCopy & inputInv;
+
+        blur(inputOriginalThres, inputOriginalThres, Size(5, 5));
+        Canny(inputOriginalThres, inputOriginalThres, 10, 30, 3);
+        dilate(inputOriginalThres, inputOriginalThres, Mat(), Point(-1, -1), 2);
+        std::vector<Rect> rois = findIndicatorRoi(inputOriginalThres, 300, 400, 0.9f, 1.1f, 0.5f);
+        for (auto roi : rois)
+        {
+                drawRectangle(inputCopy, roi);
+        }
+        //imshow("img processed", inputOriginalThres);
+        //imshow("result", inputCopy);
+
+        if (rois.size() == 1)
+        {
+                return rois[0];
+        }
+
+
+
 }
 
 std::vector<cv::Rect> DicomImageProcessor::findIndicatorRoi(const cv::Mat& input,

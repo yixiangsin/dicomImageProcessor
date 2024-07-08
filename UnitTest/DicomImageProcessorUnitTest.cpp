@@ -41,6 +41,7 @@ public:
 TEST(ExampleTest, AlwaysPass) {
         EXPECT_EQ(1, 1);
 }
+// TODO: Add more test image for edgeDetectionIndicatorRoiDetector, pixelThresholdDetectionIndicatorRoiDetector, combineDetectionIndicatorRoiDetector
 
 TEST(DicomImageProcessorTest, edgeDetectionIndicatorRoiDetector) {
         DicomImageProcessorTest dicomImageProcessor;
