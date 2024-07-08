@@ -57,4 +57,6 @@ void DicomImageUI::run(const int& method, const bool& showHistogram)
                 }
 
         } while (waitkey != 27); //esc key
+
+        //TODO: add dicom file support, display meta data
 }
