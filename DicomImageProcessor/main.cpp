@@ -1,7 +1,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
-#include "DicomImageProcessor.h"
+#include "DicomImageUI.h"
 #include <filesystem>
 #include <argparse/argparse.hpp>
 
@@ -36,24 +36,9 @@ int main(int argc, char* argv[])
         int method = program.get<int>("--method");
         bool histogram = program.get<bool>("--histogram");
 
-        for (auto& file : std::filesystem::directory_iterator{ imgPath })  //loop through the current folder
-        {
-                if (file.path().extension().compare(".png") == 0 ||
-                        file.path().extension().compare(".jpeg") == 0 ||
-                        file.path().extension().compare(".tif") == 0) {
-                        Mat input = imread(file.path().generic_string(), 0);
+        const std::vector<string> supportedImageExtensions = { ".jpeg", ".tif", ".png" };
+        DicomImageUI dicomImageUI(imgPath, supportedImageExtensions);
+        dicomImageUI.run(method, histogram);
 
-
-
-                        DicomImageProcessor dicomImageProcessor;
-                        dicomImageProcessor.dicomImageRotateCorrection(input, DicomImageProcessor::IndicatorDetectionMethod(method));
-                        imshow(file.path().filename().string(), input);
-                        if (histogram)
-                        {
-                                imshow(file.path().filename().string() + " histogram", dicomImageProcessor.generateHistogram(input));
-                        }
-                }
-        }
-        waitKey(0);
         return 0;
 }

@@ -159,8 +159,8 @@ cv::Rect DicomImageProcessor::pixelThresholdDetectionIndicatorRoiDetector(const 
                 drawRectangle(inputCopy, roi);
         }
 
-        imshow("result", inputCopy);
-        imshow("img processed", inputInv);
+        //imshow("result", inputCopy);
+        //imshow("img processed", inputInv);
 
         if (rois.size() == 1)
         {
