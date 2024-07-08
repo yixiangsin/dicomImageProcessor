@@ -125,7 +125,7 @@ cv::Rect DicomImageProcessor::edgeDetectionIndicatorRoiDetector(const cv::Mat& i
         blur(input, input, Size(5, 5));
         Canny(input, input, 10, 30, 3);
         dilate(input, input, Mat(), Point(-1, -1), 2);
-        std::vector<Rect> rois = findIndicatorRoi(input);
+        std::vector<Rect> rois = findIndicatorRoi(input, 300, 400, 0.9f, 1.1f, 0.5f);
         for (auto roi : rois)
         {
                 drawRectangle(inputCopy, roi);
@@ -153,14 +153,14 @@ cv::Rect DicomImageProcessor::pixelThresholdDetectionIndicatorRoiDetector(const 
         threshold(inputInv, inputInv, 10, 255, 1);
         dilate(inputInv, inputInv, Mat(), Point(-1, -1), 2);
 
-        std::vector<Rect> rois = findIndicatorRoi(inputInv);
+        std::vector<Rect> rois = findIndicatorRoi(inputInv, 250, 400, 0.8f, 1.2f, 0.7f);
         for (auto roi : rois)
         {
                 drawRectangle(inputCopy, roi);
         }
 
-        //imshow("result", inputCopy);
-        //imshow("img processed", inputInv);
+        imshow("result", inputCopy);
+        imshow("img processed", inputInv);
 
         if (rois.size() == 1)
         {
@@ -175,17 +175,24 @@ cv::Rect DicomImageProcessor::featuresDetectionIndicatorRoiDetector(const cv::Ma
         return cv::Rect();
 }
 
-std::vector<cv::Rect> DicomImageProcessor::findIndicatorRoi(const cv::Mat& input)
+std::vector<cv::Rect> DicomImageProcessor::findIndicatorRoi(const cv::Mat& input,
+        const size_t& rectAreaMin,
+        const size_t& rectAreaMax,
+        const float& widthHeightRatioMin,
+        const float& widthHeightRatioMax,
+        const float& areaDensityRatioThres)
 {
         std::vector<cv::Rect> rois;
         Mat labelImage(input.size(), CV_32S);
         Mat stats, centroids;
         int nLabels = connectedComponentsWithStats(input, labelImage, stats, centroids, 8, CV_32S);
         for (int label = 1; label < nLabels; ++label) { //label  0 is the background
+                size_t area = stats.at<int>(label, CC_STAT_WIDTH) * stats.at<int>(label, CC_STAT_HEIGHT);
+                float areaDensity = float(stats.at<int>(label, CC_STAT_AREA)) / float(area);
                 double widthHeightRatio = double(stats.at<int>(label, CC_STAT_WIDTH)) / double(stats.at<int>(label, CC_STAT_HEIGHT));
-                if (stats.at<int>(label, CC_STAT_AREA) > 300 &&
-                        stats.at<int>(label, CC_STAT_AREA) < 400 &&
-                        widthHeightRatio > 0.9 && widthHeightRatio < 1.1){
+                if (stats.at<int>(label, CC_STAT_AREA) > rectAreaMin &&
+                        stats.at<int>(label, CC_STAT_AREA) < rectAreaMax &&
+                        widthHeightRatio > widthHeightRatioMin && widthHeightRatio < widthHeightRatioMax){
                         rois.push_back(
                                 cv::Rect(stats.at<int>(label, CC_STAT_LEFT),
                                         stats.at<int>(label, CC_STAT_TOP),
@@ -201,9 +208,12 @@ std::vector<cv::Rect> DicomImageProcessor::findIndicatorRoi(const cv::Mat& input
                 {
                         Rect roi = boundingRect(contour);
                         double widthHeightRatio = double(roi.width) / double(roi.height);
-                        if (roi.area() > 250 &&
-                                roi.area() < 400 &&
-                                widthHeightRatio > 0.9 && widthHeightRatio < 1.1)
+                        size_t area = area = cv::contourArea(contour);
+                        float areaDensity = float(area) / float(roi.area());
+                        if (roi.area() > rectAreaMin &&
+                                roi.area() < rectAreaMax &&
+                                widthHeightRatio > widthHeightRatioMin && widthHeightRatio < widthHeightRatioMax
+                                && areaDensity > areaDensityRatioThres)
                         {
                                 rois.push_back(roi);
                         }

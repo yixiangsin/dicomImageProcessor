@@ -31,6 +31,11 @@ protected:
         virtual cv::Rect edgeDetectionIndicatorRoiDetector(const cv::Mat& input);
         virtual cv::Rect pixelThresholdDetectionIndicatorRoiDetector(const cv::Mat& input);
         virtual cv::Rect featuresDetectionIndicatorRoiDetector(const cv::Mat& input);
+        virtual std::vector<cv::Rect> findIndicatorRoi(const cv::Mat& input, const size_t& rectAreaMin,
+                const size_t& rectAreaMax,
+                const float& widtHeightRatioMin,
+                const float& widthHeightRatioMax,
+                const float& areaDensityRatio);
 
 private:
         const Indicator topLeftIndicator, bottomRightIndicator;

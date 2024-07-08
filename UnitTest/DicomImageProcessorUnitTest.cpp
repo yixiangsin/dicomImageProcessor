@@ -3,6 +3,9 @@
 #include <opencv2/imgproc.hpp>
 #include "DicomImageProcessor.h"
 
+using namespace std;
+using namespace cv;
+
 class DicomImageProcessorTest : public ::DicomImageProcessor {
 
 public:
@@ -15,6 +18,19 @@ public:
         }
         cv::Rect pixelThresholdDetectionIndicatorRoiDetector(const cv::Mat& input) override {
                 return DicomImageProcessor::pixelThresholdDetectionIndicatorRoiDetector(input);
+        }
+        std::vector<cv::Rect> findIndicatorRoi(const cv::Mat& input, const size_t& rectAreaMin,
+                const size_t& rectAreaMax,
+                const float& widtHeightRatioMin,
+                const float& widthHeightRatioMax,
+                const float& areaDensityRatio)
+        {
+                return DicomImageProcessor::findIndicatorRoi(input,
+                        rectAreaMin,
+                        rectAreaMax,
+                        widtHeightRatioMin,
+                        widthHeightRatioMax,
+                        areaDensityRatio);
         }
 };
 
@@ -114,8 +130,42 @@ TEST(DicomImageProcessorTest, dicomImageRotateCorrectionTest) {
 
 }
 
+void simulateRectBlob(cv::Mat input, const size_t& numberOfBlob, const size_t& blobWidth, const size_t& blobHeight)
+{
 
 
+
+        // Loop to create blobs
+        for (int i = 0; i < numberOfBlob; ++i) {
+                // Randomly determine the top-left corner of the blob
+                int x = rand() % (input.cols - blobWidth);
+                int y = rand() % (input.rows - blobHeight);
+
+                // Draw the blob (a filled rectangle in this case)
+                rectangle(input, Point(x, y), Point(x + blobWidth, y + blobHeight), Scalar(255), FILLED);
+        }
+}
+
+TEST(DicomImageProcessorTest, dicomImageIndicatorRoiDetectionTest)
+{
+        DicomImageProcessorTest dicomImageProcessor;
+        Mat indicator = Mat::zeros(320, 640, CV_8UC1);
+        size_t numOfBlob = 5;
+        size_t width = 15;
+        size_t height = 15;
+        size_t minArea = (width + 1) * (height + 1) - 1;
+        size_t maxArea = (width + 1) * (height + 1) + 1;
+        simulateRectBlob(indicator, numOfBlob, width, height);
+        vector<Rect> blob(dicomImageProcessor.findIndicatorRoi(indicator, minArea, maxArea, 0.99f, 1.01f, 0.99f));
+        EXPECT_EQ(blob.size(), numOfBlob);
+        for (auto& rect : blob) {
+                EXPECT_GE(rect.area(), minArea);
+                EXPECT_LE(rect.area(), maxArea);
+                EXPECT_GE(rect.width / rect.height, 0.99f);
+                EXPECT_LE(rect.width / rect.height, 1.01f);
+        }
+
+}
 
 
 // Main function
