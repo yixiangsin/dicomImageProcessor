@@ -24,15 +24,22 @@ public:
         const Indicator& getTopLeftIndicator() const;
         const Indicator& getBottomRightIndicator() const;
         bool dicomImageRotateCorrection(cv::Mat& input, const IndicatorDetectionMethod& method = IndicatorDetectionMethod::EDGE_DETECTION);
+        const cv::Mat generateHistogram(const cv::Mat& input);
         DicomImageProcessor();
 
 protected:
         virtual cv::Rect edgeDetectionIndicatorRoiDetector(const cv::Mat& input);
         virtual cv::Rect pixelThresholdDetectionIndicatorRoiDetector(const cv::Mat& input);
         virtual cv::Rect featuresDetectionIndicatorRoiDetector(const cv::Mat& input);
+        virtual std::vector<cv::Rect> findIndicatorRoi(const cv::Mat& input, const size_t& rectAreaMin,
+                const size_t& rectAreaMax,
+                const float& widtHeightRatioMin,
+                const float& widthHeightRatioMax,
+                const float& areaDensityRatio);
 
 private:
         const Indicator topLeftIndicator, bottomRightIndicator;
+        void dicomImagePreprocessing(cv::Mat& input);
         std::vector<cv::Rect> findIndicatorRoi(const cv::Mat& input);
         void drawRectangle(cv::Mat& input, const cv::Rect& roi);
 
