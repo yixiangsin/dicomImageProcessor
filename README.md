@@ -70,12 +70,14 @@ you will able to run the project after all environment is done setup with visual
 - Select drop down from the run button and select current document
 - Select DicomImageProcessorUnitTest.cpp
 - Select drop down from the run button and select current document
+- Press LEFT arrow key to navigate to previous image and Press RIGHT arrow key to navigate the next image, Press ESC key to exit
 
 ### Linux
 for running program
 ```bash
 ./DicomImageProcessor/DicomImageProcessor --input "your dicom image folder Path" --method "method to select 0 = edge detection ,1 = pixel threshold" --histogram
 ```
+-Press LEFT arrow key to navigate to previous image and Press RIGHT arrow key to navigate the next image, Press ESC key to exit
 for unit test 
 ```bash
 ./UnitTest/DicomImageProcessorUnitTest
