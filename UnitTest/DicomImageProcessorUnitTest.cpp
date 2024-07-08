@@ -19,6 +19,9 @@ public:
         cv::Rect pixelThresholdDetectionIndicatorRoiDetector(const cv::Mat& input) override {
                 return DicomImageProcessor::pixelThresholdDetectionIndicatorRoiDetector(input);
         }
+        cv::Rect combineDetectionIndicatorRoiDetector(const cv::Mat& input) override {
+                return DicomImageProcessor::combineDetectionIndicatorRoiDetector(input);
+        }
         std::vector<cv::Rect> findIndicatorRoi(const cv::Mat& input, const size_t& rectAreaMin,
                 const size_t& rectAreaMax,
                 const float& widtHeightRatioMin,
@@ -85,6 +88,32 @@ TEST(DicomImageProcessorTest, pixelThresholdDetectionIndicatorRoiDetectorEmptyIm
 
         // Check if the function returns an negative ROI for an empty image
         cv::Rect roi = dicomImageProcessor.pixelThresholdDetectionIndicatorRoiDetector(emptyInput);
+        EXPECT_EQ(roi.x, -1);
+        EXPECT_EQ(roi.y, -1);
+        EXPECT_EQ(roi.width, -1);
+        EXPECT_EQ(roi.height, -1);
+}
+
+TEST(DicomImageProcessorTest, combineDetectionIndicatorRoiDetector) {
+        DicomImageProcessorTest dicomImageProcessor;
+
+        // Check if the detected ROI is close to the top left indicator
+        cv::Mat inputTopLeft = cv::imread("../../../../dicom/topLeft.jpeg", 0);
+        cv::Rect intersectTopLeft = dicomImageProcessor.combineDetectionIndicatorRoiDetector(inputTopLeft) & dicomImageProcessor.getTopLeftIndicator().position;
+        EXPECT_GT(intersectTopLeft.area(), dicomImageProcessor.getTopLeftIndicator().size);
+
+        // Check if the detected ROI is close to the bottom right indicator
+        cv::Mat inputBottomRight = cv::imread("../../../../dicom/bottomRight.png", 0);
+        cv::Rect intersectBottomRight = dicomImageProcessor.combineDetectionIndicatorRoiDetector(inputBottomRight) & dicomImageProcessor.getBottomRightIndicator().position;
+        EXPECT_GT(intersectBottomRight.area(), dicomImageProcessor.getBottomRightIndicator().size);
+}
+
+TEST(DicomImageProcessorTest, combineDetectionIndicatorRoiDetectorEmptyImage) {
+        DicomImageProcessorTest dicomImageProcessor;
+        cv::Mat emptyInput;
+
+        // Check if the function returns an negative ROI for an empty image
+        cv::Rect roi = dicomImageProcessor.combineDetectionIndicatorRoiDetector(emptyInput);
         EXPECT_EQ(roi.x, -1);
         EXPECT_EQ(roi.y, -1);
         EXPECT_EQ(roi.width, -1);

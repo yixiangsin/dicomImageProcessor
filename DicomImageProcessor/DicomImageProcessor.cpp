@@ -108,7 +108,7 @@ cv::Rect DicomImageProcessor::indicatorRoiDetector(const cv::Mat& input, const I
                 case PIXEL_THRESHOLD:
                         return pixelThresholdDetectionIndicatorRoiDetector(input);
                 case FEATURES_DETECTION:
-                        return featuresDetectionIndicatorRoiDetector(input);
+                        return combineDetectionIndicatorRoiDetector(input);
         };
         return cv::Rect();
 }
@@ -170,7 +170,7 @@ cv::Rect DicomImageProcessor::pixelThresholdDetectionIndicatorRoiDetector(const 
         return cv::Rect();
 }
 
-cv::Rect DicomImageProcessor::featuresDetectionIndicatorRoiDetector(const cv::Mat& input)
+cv::Rect DicomImageProcessor::combineDetectionIndicatorRoiDetector(const cv::Mat& input)
 {
         return cv::Rect();
 }
