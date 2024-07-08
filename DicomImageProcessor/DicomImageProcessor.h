@@ -24,6 +24,7 @@ public:
         const Indicator& getTopLeftIndicator() const;
         const Indicator& getBottomRightIndicator() const;
         bool dicomImageRotateCorrection(cv::Mat& input, const IndicatorDetectionMethod& method = IndicatorDetectionMethod::EDGE_DETECTION);
+        const cv::Mat generateHistogram(const cv::Mat& input);
         DicomImageProcessor();
 
 protected:
@@ -33,6 +34,7 @@ protected:
 
 private:
         const Indicator topLeftIndicator, bottomRightIndicator;
+        void dicomImagePreprocessing(cv::Mat& input);
         std::vector<cv::Rect> findIndicatorRoi(const cv::Mat& input);
         void drawRectangle(cv::Mat& input, const cv::Rect& roi);
 

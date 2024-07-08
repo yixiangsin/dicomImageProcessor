@@ -3,6 +3,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
+#include <opencv2/core/types.hpp>
 #include "DicomImageProcessor.h"
 
 using namespace std;
@@ -44,6 +45,60 @@ const Indicator& DicomImageProcessor::getBottomRightIndicator() const
         return bottomRightIndicator;
 }
 
+const cv::Mat DicomImageProcessor::generateHistogram(const cv::Mat& input)
+{
+        if (input.empty())
+        {
+                return Mat();
+        }
+        //ignore the pixel value 0 and 255
+        const size_t maxHistValue = 254;
+        const size_t minHistValue = 1;
+        // dilate the image to remove line and number
+        dilate(input, input, Mat(), Point(-1, -1), 2);
+
+        Mat hist;
+        int histSize = maxHistValue;
+        float range[] = { minHistValue, maxHistValue };
+        const float* histRange = { range };
+        calcHist(&input, 1, 0, Mat(), hist, 1, &histSize, &histRange);
+
+        // Normalize the result to [0, histImage.rows]
+        cv::normalize(hist, hist, 0, maxHistValue, cv::NORM_MINMAX);
+
+        int hist_w = 512; int hist_h = 400;
+        int bin_w = cvRound((double)hist_w / histSize);
+        Mat histImage(hist_h, hist_w + 50, CV_8UC1, Scalar(255));
+
+        int binWidth = cvRound((double)(histImage.cols - 50) / histSize);
+        // Draw the histogram
+        for (int i = 1; i < histSize; i++) {
+                line(histImage,
+                        Point(50 + binWidth * (i - 1), histImage.rows - 50 - cvRound(hist.at<float>(i - 1))),
+                        Point(50 + binWidth * (i), histImage.rows - 50 - cvRound(hist.at<float>(i))),
+                        Scalar(0), 2, 8, 0);
+        }
+        // Draw the x and y axes
+        line(histImage, Point(50, 0), Point(50, histImage.rows - 50), Scalar(10), 2); // Y-axis
+        line(histImage, Point(50, histImage.rows - 50), Point(histImage.cols, histImage.rows - 50), Scalar(50), 2); // X-axis
+
+        // Annotate the histogram with numbers on x-axis
+        for (int i = 0; i < histSize; i += 32) { // Annotate every 32 bins
+                int x = 50 + binWidth * i;
+                putText(histImage, to_string(i), Point(x, histImage.rows - 30), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(50), 1, LINE_AA);
+        }
+
+        // Annotate the histogram with numbers on y-axis
+        int maxVal = 255;
+        for (int i = 0; i <= maxVal; i += 50) {
+                int y = histImage.rows - 50 - cvRound((float)i * histImage.rows / (float)maxVal);
+                putText(histImage, to_string(i), Point(10, y), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(50), 1, LINE_AA);
+        }
+
+        // Display the histogram
+        return histImage;
+}
+
 cv::Rect DicomImageProcessor::indicatorRoiDetector(const cv::Mat& input, const IndicatorDetectionMethod& method)
 {
         switch (method)
@@ -64,6 +119,8 @@ cv::Rect DicomImageProcessor::edgeDetectionIndicatorRoiDetector(const cv::Mat& i
         {
                 return cv::Rect(-1, -1, -1, -1);
         }
+        // dilate the image to remove line and number
+        dilate(input, input, Mat(), Point(-1, -1), 2);
         Mat inputCopy = input.clone();
         blur(input, input, Size(5, 5));
         Canny(input, input, 10, 30, 3);
@@ -89,6 +146,8 @@ cv::Rect DicomImageProcessor::pixelThresholdDetectionIndicatorRoiDetector(const 
         {
                 return cv::Rect(-1, -1, -1, -1);
         }
+        // dilate the image to remove line and number
+        dilate(input, input, Mat(), Point(-1, -1), 2);
         Mat inputCopy = input.clone();
         Mat inputInv = 255 - input;
         threshold(inputInv, inputInv, 10, 255, 1);
@@ -157,6 +216,10 @@ std::vector<cv::Rect> DicomImageProcessor::findIndicatorRoi(const cv::Mat& input
 void DicomImageProcessor::drawRectangle(cv::Mat& input, const cv::Rect& roi)
 {
         cv::rectangle(input, roi, cv::Scalar(255, 0, 0), 2);
+}
+
+void DicomImageProcessor::dicomImagePreprocessing(cv::Mat& input)
+{
 }
 
 Indicator::Indicator(const cv::Rect& position, const size_t size) : position(position), size(size)
