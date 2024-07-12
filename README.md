@@ -66,7 +66,7 @@ This repository contains a DICOM (Digital Imaging and Communications in Medicine
 
 you will able to run the project after all environment is done setup with visual studio
 - Select DicomImageProcessor.cpp
-- Edit launch.vs.json in .vs/ folder to add "args": [ "--input", "your dicom image folder Path", "--method", "method to select 0 = edge detection ,1 = pixel threshold" , "--histogram"]
+- Edit launch.vs.json in .vs/ folder to add "args": [ "--input", "your dicom image folder Path", "--method", "method to select 0 = edge detection ,1 = pixel threshold, 2 = combine method of both" , "--histogram"]
 - Select drop down from the run button and select current document
 - Select DicomImageProcessorUnitTest.cpp
 - Select drop down from the run button and select current document
@@ -75,7 +75,7 @@ you will able to run the project after all environment is done setup with visual
 ### Linux
 for running program
 ```bash
-./DicomImageProcessor/DicomImageProcessor --input "your dicom image folder Path" --method "method to select 0 = edge detection ,1 = pixel threshold" --histogram
+./DicomImageProcessor/DicomImageProcessor --input "your dicom image folder Path" --method "method to select 0 = edge detection ,1 = pixel threshold , 2 = combine method of both" --histogram
 ```
 -Press LEFT arrow key to navigate to previous image and Press RIGHT arrow key to navigate the next image, Press ESC key to exit
 for unit test 
